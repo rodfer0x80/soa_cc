@@ -1,2 +1,2 @@
-# gocc
-Golang Command and Control Server
+# soa_cc
+Golang Command and Control Server for SOA
